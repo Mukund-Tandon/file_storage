@@ -30,7 +30,7 @@ class AuthCheckCubit extends Cubit<AuthCheckState> {
       emit(StoringAuthenticationDetailsState());
       String authToken = await user.getIdToken();
       await storeAuthTokenUsecase.call(authToken);
-      authTokenChangeUseCase.call();
+      // authTokenChangeUseCase.call();
       var userentity = UserEntity(email: user.email!);
       userentity.authToken = authToken;
       userentity.uid = user.uid;

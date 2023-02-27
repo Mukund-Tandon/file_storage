@@ -13,4 +13,10 @@ class UserDetails {
 
   @HiveField(3)
   late double space;
+
+  @HiveField(4)
+  late bool cancelled;
+
+  @HiveField(5)
+  late String endTime;
 }

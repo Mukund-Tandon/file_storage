@@ -16,13 +16,16 @@ import 'package:goal_lock/domain/usecases/authentication/get_stored_auth_tokens_
 import 'package:goal_lock/domain/usecases/files/get_files_usecase.dart';
 import 'package:goal_lock/domain/usecases/files/upload_files.dart';
 import 'package:goal_lock/domain/usecases/premium/connect_to_payment_websocket.dart';
+import 'package:goal_lock/domain/usecases/premium/store_subcribtion_details.dart';
 import 'package:goal_lock/domain/usecases/user/get_locally_stored_user_details_usecase.dart';
 import 'package:goal_lock/domain/usecases/user/get_user_details_from_server_usecase.dart';
 import 'package:goal_lock/domain/usecases/user/store_user_details_locally_usecase.dart';
+import 'package:goal_lock/domain/usecases/user/update_user_field_usecase.dart';
 import 'package:goal_lock/presentation/bloc/auth_bloc/auth_check_cubit.dart';
 import 'package:goal_lock/presentation/bloc/auth_bloc/login_bloc.dart';
 import 'package:goal_lock/presentation/bloc/file_bloc/file_bloc.dart';
 import 'package:goal_lock/presentation/bloc/get_premium_bloc/get_premium_bloc.dart';
+import 'package:goal_lock/presentation/bloc/user_entity_bloc/user_entity_bloc.dart';
 import 'package:hive_flutter/adapters.dart';
 
 import 'domain/usecases/authentication/store_auth_tokens_usecase.dart';
@@ -44,13 +47,19 @@ Future<void> init() async {
       storeAuthTokenUsecase: sl(),
       getuserDetailsFromServerUsecase: sl(),
       storeUserDetailsLocallyUsecase: sl()));
-  sl.registerFactory<GetPremiumBloc>(
-      () => GetPremiumBloc(connectToPaymtWebsocket: sl()));
-
+  sl.registerFactory<GetPremiumBloc>(() => GetPremiumBloc(
+      connectToPaymtWebsocket: sl(),
+      storeSubcribtionDetails: sl(),
+      updateUserFieldUsecase: sl()));
+  sl.registerFactory<UserEntityBloc>(() => UserEntityBloc(
+      authTokenChangeUseCase: sl(),
+      storeAuthTokenUsecase: sl(),
+      getLocalyStoredUserDetailsUsecase: sl()));
   //Usecase
   sl.registerLazySingleton<ConnectToPaymtWebsocket>(
       () => ConnectToPaymtWebsocket(premiumSubscribtionRepository: sl()));
-
+  sl.registerLazySingleton<StoreSubcribtionDetails>(
+      () => StoreSubcribtionDetails(premiumSubscribtionRepository: sl()));
   //files
   sl.registerLazySingleton<UploadFilesUsecase>(
       () => UploadFilesUsecase(fileRepository: sl()));
@@ -70,6 +79,7 @@ Future<void> init() async {
       () => StoreUserDetailsLocallyUsecase(userRepository: sl()));
   sl.registerLazySingleton(
       () => GetLocalyStoredUserDetailsUsecase(userRepository: sl()));
+  sl.registerLazySingleton(() => UpdateUserFieldUsecase(userRepository: sl()));
 
   //Repository
   sl.registerLazySingleton<FileRepository>(
@@ -80,14 +90,15 @@ Future<void> init() async {
           authenticationRemoteDataSource: sl()));
   sl.registerLazySingleton<UserRepository>(() => UserRepositoryImpl(
       userRemoteDataSource: sl(), userLocalDataSource: sl()));
-  sl.registerLazySingleton<PremiumSubscribtionRepository>(
-      () => PremiumSubcribtionRepositoryImpl(premiumRemoteDataSource: sl()));
+  sl.registerLazySingleton<PremiumSubscribtionRepository>(() =>
+      PremiumSubcribtionRepositoryImpl(
+          premiumRemoteDataSource: sl(), userLocalDataSource: sl()));
 
   //DataSources
 
   //GetPremium
   sl.registerLazySingleton<PremiumRemoteDataSource>(
-      () => PremiumRemoteDataSourceImpl());
+      () => PremiumRemoteDataSourceImpl(dio: sl()));
 
   //file
   sl.registerLazySingleton<FileRemoteDataSourceSource>(

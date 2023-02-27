@@ -8,6 +8,7 @@ abstract class UserRepository {
   Future<UserEntity?> getUserDetails(UserEntity userEntity);
   Future<void> storeUserDetailsLocally(UserEntity userEntity);
   UserEntity? getLocalyStoredUserDetails(UserEntity userEntity);
+  Future<UserEntity?> updateField(String field, dynamic data);
 }
 
 class UserRepositoryImpl implements UserRepository {
@@ -28,5 +29,10 @@ class UserRepositoryImpl implements UserRepository {
   @override
   UserEntity? getLocalyStoredUserDetails(UserEntity userEntity) {
     return userLocalDataSource.getLocalyStoredUserDetails(userEntity);
+  }
+
+  @override
+  Future<UserEntity?> updateField(String field, data) async {
+    return await userLocalDataSource.updateField(field, data);
   }
 }
