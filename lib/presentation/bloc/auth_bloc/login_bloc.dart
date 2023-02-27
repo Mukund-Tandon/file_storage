@@ -41,9 +41,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           print('done auth $credential');
           var userEntity = UserEntity(email: credential.user!.email!);
           userEntity.authToken = await credential.user!.getIdToken();
+          userEntity.uid = credential.user!.uid;
           //TODO Figure how auth token will hange user Entity
           await storeAuthTokenUsecase.call(userEntity.authToken);
-          authTokenChangeUseCase.call();
+          // authTokenChangeUseCase.call();
           print('Auth token sorted');
           UserEntity? user =
               await getuserDetailsFromServerUsecase.call(userEntity);

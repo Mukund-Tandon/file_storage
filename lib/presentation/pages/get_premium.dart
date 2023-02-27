@@ -3,11 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:goal_lock/domain/entities/user_entity.dart';
 import 'package:goal_lock/presentation/bloc/get_premium_bloc/get_premium_bloc.dart';
+import 'package:goal_lock/presentation/bloc/user_entity_bloc/user_entity_bloc.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class GetPremium extends StatelessWidget {
-  GetPremium({Key? key, required this.userEntity}) : super(key: key);
+  GetPremium({Key? key, required this.userEntity, required this.pevcontext})
+      : super(key: key);
   UserEntity userEntity;
+  BuildContext pevcontext;
   var controller = WebViewController()
     ..setJavaScriptMode(JavaScriptMode.unrestricted);
   @override
@@ -24,6 +27,7 @@ class GetPremium extends StatelessWidget {
             if (state is PaymentStartedState) {
               print(state.url);
               controller.loadRequest(Uri.parse(state.url));
+
               return WebViewWidget(controller: controller);
             } else if (state is GetPremiumLoadingState) {
               return const Center(
@@ -36,7 +40,12 @@ class GetPremium extends StatelessWidget {
                     Text('Payment Completed'),
                     TextButton(
                         onPressed: () {
+                          pevcontext.read<UserEntityBloc>().add(
+                              UserEntityChangeEvent(userEntity: userEntity));
                           Navigator.pop(context);
+                          // context.read<UserEntityBloc>().add(
+                          //     UserEntityChangeEvent(userEntity: userEntity));
+                          // Navigator.pop(context);
                         },
                         child: Text('Back To Home'))
                   ],

@@ -4,12 +4,15 @@ import 'package:goal_lock/presentation/pages/get_premium.dart';
 
 class PremiumAndSpace extends StatelessWidget {
   final UserEntity userEntity;
-  const PremiumAndSpace({Key? key, required this.userEntity}) : super(key: key);
+  BuildContext prevContext;
+  PremiumAndSpace(
+      {Key? key, required this.userEntity, required this.prevContext})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.amberAccent,
+      color: userEntity.premium ? Colors.blueGrey : Colors.amberAccent,
       height: 100,
       width: 450,
       child: Column(
@@ -21,8 +24,10 @@ class PremiumAndSpace extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          GetPremium(userEntity: userEntity)));
+                      builder: (context) => GetPremium(
+                            userEntity: userEntity,
+                            pevcontext: prevContext,
+                          )));
             },
             child: Container(
               child: Icon(Icons.star),

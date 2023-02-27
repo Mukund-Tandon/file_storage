@@ -161,6 +161,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                       password: _password,
                     );
                     var userEntity = UserEntity(email: credential.user!.email!);
+                    userEntity.uid = credential.user!.uid;
                     userEntity.authToken = await credential.user!.getIdToken();
 
                     Navigator.pushAndRemoveUntil(
