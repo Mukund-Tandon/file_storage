@@ -5,9 +5,11 @@ import 'package:goal_lock/domain/entities/user_entity.dart';
 
 import '../datasources/localDataSource/user/user_local_datasource.dart';
 
+//TODO Change spelling of subsciption
 abstract class PremiumSubscribtionRepository {
   Stream<PaymentWebSocketEntity>? connectToPaymentWebsocket();
   Future<void> storeSubcribtionDetails(UserEntity userEntity);
+  Future<SubcribtionDetailEntity?> cancelSubcribtion(UserEntity userEntity);
 }
 
 class PremiumSubcribtionRepositoryImpl
@@ -30,5 +32,11 @@ class PremiumSubcribtionRepositoryImpl
       await userLocalDataSource
           .storeSubcribtionDetailsLocally(subcribtionDetailEntity);
     }
+  }
+
+  @override
+  Future<SubcribtionDetailEntity?> cancelSubcribtion(
+      UserEntity userEntity) async {
+    return await premiumRemoteDataSource.cancelSubcribtion(userEntity);
   }
 }

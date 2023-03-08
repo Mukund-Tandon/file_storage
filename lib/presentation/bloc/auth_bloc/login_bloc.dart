@@ -15,6 +15,7 @@ part 'login_event.dart';
 part 'login_state.dart';
 
 //TODO: make register bloc
+//TODO when user who has premium logins it donot get premium data from server so get it from ser
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final StoreAuthTokenUsecase storeAuthTokenUsecase;
   final AuthTokenChangeUseCase authTokenChangeUseCase;

@@ -15,6 +15,7 @@ import 'package:goal_lock/domain/usecases/authentication/auth_tokens_change_usec
 import 'package:goal_lock/domain/usecases/authentication/get_stored_auth_tokens_usecase.dart';
 import 'package:goal_lock/domain/usecases/files/get_files_usecase.dart';
 import 'package:goal_lock/domain/usecases/files/upload_files.dart';
+import 'package:goal_lock/domain/usecases/premium/cancel_subcribtion_usecase.dart';
 import 'package:goal_lock/domain/usecases/premium/connect_to_payment_websocket.dart';
 import 'package:goal_lock/domain/usecases/premium/store_subcribtion_details.dart';
 import 'package:goal_lock/domain/usecases/user/get_locally_stored_user_details_usecase.dart';
@@ -24,7 +25,8 @@ import 'package:goal_lock/domain/usecases/user/update_user_field_usecase.dart';
 import 'package:goal_lock/presentation/bloc/auth_bloc/auth_check_cubit.dart';
 import 'package:goal_lock/presentation/bloc/auth_bloc/login_bloc.dart';
 import 'package:goal_lock/presentation/bloc/file_bloc/file_bloc.dart';
-import 'package:goal_lock/presentation/bloc/get_premium_bloc/get_premium_bloc.dart';
+import 'package:goal_lock/presentation/bloc/premium_bloc/cancel_subcribtion_bloc.dart';
+import 'package:goal_lock/presentation/bloc/premium_bloc/get_premium_bloc.dart';
 import 'package:goal_lock/presentation/bloc/user_entity_bloc/user_entity_bloc.dart';
 import 'package:hive_flutter/adapters.dart';
 
@@ -55,11 +57,16 @@ Future<void> init() async {
       authTokenChangeUseCase: sl(),
       storeAuthTokenUsecase: sl(),
       getLocalyStoredUserDetailsUsecase: sl()));
+  sl.registerFactory<CancelSubcribtionBloc>(() => CancelSubcribtionBloc(
+      updateUserFieldUsecase: sl(), cancelSubcribtionUsecase: sl()));
   //Usecase
   sl.registerLazySingleton<ConnectToPaymtWebsocket>(
       () => ConnectToPaymtWebsocket(premiumSubscribtionRepository: sl()));
   sl.registerLazySingleton<StoreSubcribtionDetails>(
       () => StoreSubcribtionDetails(premiumSubscribtionRepository: sl()));
+  sl.registerLazySingleton<CancelSubcribtionUsecase>(
+      () => CancelSubcribtionUsecase(premiumSubscribtionRepository: sl()));
+
   //files
   sl.registerLazySingleton<UploadFilesUsecase>(
       () => UploadFilesUsecase(fileRepository: sl()));

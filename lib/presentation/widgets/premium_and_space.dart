@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:goal_lock/domain/entities/user_entity.dart';
 import 'package:goal_lock/presentation/pages/get_premium.dart';
 
+import 'cancel_subcribtion_dialog.dart';
+
 class PremiumAndSpace extends StatelessWidget {
   final UserEntity userEntity;
   BuildContext prevContext;
@@ -13,7 +15,7 @@ class PremiumAndSpace extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: userEntity.premium ? Colors.blueGrey : Colors.amberAccent,
-      height: 100,
+      height: 150,
       width: 450,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,6 +32,7 @@ class PremiumAndSpace extends StatelessWidget {
                           )));
             },
             child: Container(
+              height: 60,
               child: Icon(Icons.star),
             ),
           ),
@@ -69,7 +72,27 @@ class PremiumAndSpace extends StatelessWidget {
                 )
               ],
             ),
-          )
+          ),
+          userEntity.premium && !userEntity.subcribtionDetailsEntity!.cancelled
+              ? GestureDetector(
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return CancelSubscriptionDialog(
+                            userEntity: userEntity,
+                          );
+                        },
+                        barrierDismissible: true,
+                        barrierColor: Color(0x0fEEEDF0));
+                  },
+                  child: Container(
+                    height: 60,
+                    width: 100,
+                    child: Icon(Icons.cancel),
+                  ),
+                )
+              : Container()
         ],
       ),
     );

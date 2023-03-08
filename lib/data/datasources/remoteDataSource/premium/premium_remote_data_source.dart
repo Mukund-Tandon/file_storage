@@ -12,6 +12,7 @@ import '../../../../domain/entities/subscribtion_details_entity.dart';
 abstract class PremiumRemoteDataSource {
   Stream<PaymentWebSocketEntity>? connectToPaymentWebsocket();
   Future<SubcribtionDetailEntity?> getSubcribtionDetails(UserEntity userEntity);
+  Future<SubcribtionDetailEntity?> cancelSubcribtion(UserEntity userEntity);
 }
 
 class PremiumRemoteDataSourceImpl implements PremiumRemoteDataSource {
@@ -48,10 +49,34 @@ class PremiumRemoteDataSourceImpl implements PremiumRemoteDataSource {
           options: Options(
               headers: {'Authorization': 'Bearer ${userEntity.authToken}'}));
       print(response.data);
+      if (!response.data['subcribtion_status']) {
+        return null;
+      }
       return SubcribtionDetailEntity.fromJson(
           response.data['subcribtion_details']);
     } catch (e) {
       print('error');
+      return null;
+    }
+  }
+
+  @override
+  Future<SubcribtionDetailEntity?> cancelSubcribtion(
+      UserEntity userEntity) async {
+    String url = "http://$ip:8000/cancel_subcribtion/${userEntity.uid}";
+
+    try {
+      var response = await dio.post(url,
+          options: Options(
+              headers: {'Authorization': 'Bearer ${userEntity.authToken}'}));
+      print(response.data);
+      if (!response.data['subcribtion_status']) {
+        return null;
+      }
+      return SubcribtionDetailEntity.fromJson(
+          response.data['subcribtion_details']);
+    } catch (e) {
+      print(e);
       return null;
     }
   }

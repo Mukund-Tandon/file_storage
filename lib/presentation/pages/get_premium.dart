@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:goal_lock/domain/entities/user_entity.dart';
-import 'package:goal_lock/presentation/bloc/get_premium_bloc/get_premium_bloc.dart';
+
 import 'package:goal_lock/presentation/bloc/user_entity_bloc/user_entity_bloc.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+import '../bloc/premium_bloc/get_premium_bloc.dart';
 
 class GetPremium extends StatelessWidget {
   GetPremium({Key? key, required this.userEntity, required this.pevcontext})
@@ -35,12 +37,13 @@ class GetPremium extends StatelessWidget {
               );
             } else if (state is PaymentCompletedState) {
               return Center(
+                //TODO remove prevcontext
                 child: Column(
                   children: [
                     Text('Payment Completed'),
                     TextButton(
                         onPressed: () {
-                          pevcontext.read<UserEntityBloc>().add(
+                          context.read<UserEntityBloc>().add(
                               UserEntityChangeEvent(userEntity: userEntity));
                           Navigator.pop(context);
                           // context.read<UserEntityBloc>().add(
