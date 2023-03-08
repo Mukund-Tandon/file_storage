@@ -60,7 +60,7 @@ class CancelSubscriptionDialog extends StatelessWidget {
                             : Text('Yes',
                                 style: TextStyle(
                                     color: Colors.red, fontSize: 10))),
-                    // Spacer(),
+                    Spacer(),
                     //hello hi
                     TextButton(
                         onPressed: cancellingInProgress
