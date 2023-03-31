@@ -6,17 +6,19 @@ import 'cancel_subcribtion_dialog.dart';
 
 class PremiumAndSpace extends StatelessWidget {
   final UserEntity userEntity;
-  BuildContext prevContext;
-  PremiumAndSpace(
-      {Key? key, required this.userEntity, required this.prevContext})
-      : super(key: key);
+  PremiumAndSpace({Key? key, required this.userEntity}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: userEntity.premium ? Colors.blueGrey : Colors.amberAccent,
-      height: 150,
-      width: 450,
+      // color: userEntity.premium ? Colors.blueGrey : Colors.amberAccent,
+      // height: 150,
+      // width: 450,
+
+      decoration: BoxDecoration(
+        color: Colors.blueGrey.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
@@ -28,12 +30,23 @@ class PremiumAndSpace extends StatelessWidget {
                   MaterialPageRoute(
                       builder: (context) => GetPremium(
                             userEntity: userEntity,
-                            pevcontext: prevContext,
                           )));
             },
             child: Container(
               height: 60,
               child: Icon(Icons.star),
+            ),
+          ),
+          Container(
+            height: 20,
+            margin: EdgeInsets.only(left: 20),
+            child: Text(
+              'Recent',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
           // Container(
@@ -56,19 +69,33 @@ class PremiumAndSpace extends StatelessWidget {
           Container(
             child: Row(
               children: [
-                Container(
-                  width: 300,
-                  child: LinearProgressIndicator(
-                    value: userEntity.premium
-                        ? (userEntity.space / 100)
-                        : (userEntity.space / 100),
-                    color: Colors.green,
-                    backgroundColor: Colors.pinkAccent,
-                    minHeight: 20,
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: 150,
+                  ),
+                  child: Container(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: LinearProgressIndicator(
+                        value: userEntity.premium
+                            ? (userEntity.space / 100)
+                            : (userEntity.space / 100) + 0.2,
+                        color: Colors.blueGrey.shade500,
+                        backgroundColor: Colors.grey.withOpacity(0.7),
+                        minHeight: 7,
+                      ),
+                    ),
                   ),
                 ),
                 Container(
-                  child: Text('${(userEntity.space / 100) * 100}%'),
+                  child: Text(
+                    '${(userEntity.space / 100) * 100}%',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 )
               ],
             ),

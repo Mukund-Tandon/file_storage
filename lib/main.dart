@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:goal_lock/hive_objects.dart';
 import 'package:goal_lock/presentation/bloc/auth_bloc/auth_check_cubit.dart';
 import 'package:goal_lock/presentation/bloc/auth_bloc/login_bloc.dart';
+import 'package:goal_lock/presentation/bloc/drawer_animation_logic/bloc/drawer_animation_bloc.dart';
 import 'package:goal_lock/presentation/bloc/file_bloc/file_bloc.dart';
 import 'package:goal_lock/presentation/bloc/premium_bloc/cancel_subcribtion_bloc.dart';
 import 'package:goal_lock/presentation/bloc/premium_bloc/get_premium_bloc.dart';
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => sl<GetPremiumBloc>()),
         BlocProvider(create: (context) => sl<UserEntityBloc>()),
         BlocProvider(create: (context) => sl<CancelSubcribtionBloc>()),
+        BlocProvider(create: (context) => sl<DrawerAnimationBloc>()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

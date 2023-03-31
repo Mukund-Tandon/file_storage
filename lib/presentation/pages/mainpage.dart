@@ -10,6 +10,8 @@ import 'package:goal_lock/injection_container.dart';
 import 'package:goal_lock/presentation/bloc/file_bloc/file_bloc.dart';
 import 'package:goal_lock/presentation/bloc/user_entity_bloc/user_entity_bloc.dart';
 import 'package:goal_lock/presentation/pages/authentication.dart';
+import 'package:goal_lock/presentation/pages/home_screen.dart';
+import 'package:goal_lock/presentation/pages/side_menu.dart';
 import 'package:goal_lock/presentation/widgets/premium_and_space.dart';
 import 'package:goal_lock/presentation/widgets/start_button.dart';
 
@@ -53,161 +55,20 @@ class _MainpageState extends State<Mainpage> {
         systemNavigationBarColor: Color(0xff17181F),
       ),
       child: Scaffold(
-        backgroundColor: const Color(0xff17181F),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            sl<UpdateUserFieldUsecase>().call('premium', false);
-          },
-        ),
-        body: SafeArea(
-          child: BlocBuilder<UserEntityBloc, UserEntityState>(
-            builder: (context, state) {
-              if (state is UserEntityLoadingState) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              if (state is UserEntityChangedState) {
-                userEntity = state.userEntity;
-                print('change is here');
-                print(userEntity.premium);
-              }
-              return Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  PremiumAndSpace(userEntity: userEntity, prevContext: context),
-                  Container(
-                    height: 90,
-                    width: displayWidth(context),
-                    child: Container(
-                      width: displayWidth(context) / 1.5,
-                      height: 120,
-                      child: Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              final _auth = FirebaseAuth.instance;
-                              _auth.signOut();
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const AuthenticationScreen()),
-                                  (route) => false);
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.only(left: 10, top: 10),
-                              alignment: Alignment.centerLeft,
-                              child: const Text(
-                                '----',
-                                style: TextStyle(
-                                    color: Color(0xff7A7C7F), fontSize: 21),
-                              ),
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              Container(
-                                margin:
-                                    const EdgeInsets.only(left: 10, top: 10),
-                                alignment: Alignment.centerLeft,
-                                child: const Text(
-                                  'Uploads',
-                                  style: TextStyle(
-                                      color: Color(0xffEEEDF0), fontSize: 18),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Container(
-                                margin:
-                                    const EdgeInsets.only(left: 10, top: 10),
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  'Shared',
-                                  style: TextStyle(
-                                      color: Color(0xffEEEDF0).withOpacity(0.5),
-                                      fontSize: 18),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      print('tap');
-                      sl<UploadFilesUsecase>().call(userEntity);
-                    },
-                    child: const StartButton(),
-                  ),
-                  Expanded(child: BlocBuilder<FileBloc, FileState>(
-                      builder: (context, state) {
-                    if (state is FilesLoadedState) {
-                      files = state.files;
-                      return _gridListOfFiles();
-                    } else if (state is FilesLoadingErrorState) {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const AuthenticationScreen()),
-                          (route) => false);
-
-                      return Container();
-                    } else {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  }))
-                  // Container(
-                  //   color: Colors.yellow,
-                  //   height: 200,
-                  //   width: 200,
-                  //   child: Image.network(
-                  //     'http://159.65.151.168/media/email@gmail.com/download_kLnDmi7.jpeg',
-                  //     loadingBuilder: (BuildContext context, Widget child,
-                  //         ImageChunkEvent? loadingProgress) {
-                  //       if (loadingProgress == null) {
-                  //         return child;
-                  //       }
-                  //       return Container(
-                  //         color: Colors.red,
-                  //       );
-                  //     },
-                  //     // errorBuilder: (BuildContext context, Object exception,
-                  //     //     StackTrace? stackTrace) {
-                  //     //   // Appropriate logging or analytics, e.g.
-                  //     //   // myAnalytics.recordError(
-                  //     //   //   'An error occurred loading "https://example.does.not.exist/image.jpg"',
-                  //     //   //   exception,
-                  //     //   //   stackTrace,
-                  //     //   // );
-                  //     //   return Container(
-                  //     //     color: Colors.red,
-                  //     //   );
-                  //     // },
-                  //   ),
-                  // )
-                ],
-              );
+          backgroundColor: const Color(0xff17181F),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              sl<UpdateUserFieldUsecase>().call('premium', false);
             },
           ),
-        ),
-      ),
+          body: Stack(
+            children: [
+              SideMenu(
+                userEntity: userEntity,
+              ),
+              HomeScreen(userEntity: userEntity)
+            ],
+          )),
     );
   }
-
-  _gridListOfFiles() => GridView.builder(
-        itemCount: files.length,
-        gridDelegate:
-            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-        itemBuilder: (BuildContext context, int index) {
-          return Image.network(files[index].location);
-        },
-      );
 }

@@ -24,6 +24,7 @@ import 'package:goal_lock/domain/usecases/user/store_user_details_locally_usecas
 import 'package:goal_lock/domain/usecases/user/update_user_field_usecase.dart';
 import 'package:goal_lock/presentation/bloc/auth_bloc/auth_check_cubit.dart';
 import 'package:goal_lock/presentation/bloc/auth_bloc/login_bloc.dart';
+import 'package:goal_lock/presentation/bloc/drawer_animation_logic/bloc/drawer_animation_bloc.dart';
 import 'package:goal_lock/presentation/bloc/file_bloc/file_bloc.dart';
 import 'package:goal_lock/presentation/bloc/premium_bloc/cancel_subcribtion_bloc.dart';
 import 'package:goal_lock/presentation/bloc/premium_bloc/get_premium_bloc.dart';
@@ -59,6 +60,7 @@ Future<void> init() async {
       getLocalyStoredUserDetailsUsecase: sl()));
   sl.registerFactory<CancelSubcribtionBloc>(() => CancelSubcribtionBloc(
       updateUserFieldUsecase: sl(), cancelSubcribtionUsecase: sl()));
+  sl.registerFactory<DrawerAnimationBloc>(() => DrawerAnimationBloc());
   //Usecase
   sl.registerLazySingleton<ConnectToPaymtWebsocket>(
       () => ConnectToPaymtWebsocket(premiumSubscribtionRepository: sl()));

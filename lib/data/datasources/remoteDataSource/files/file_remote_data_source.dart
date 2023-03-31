@@ -37,9 +37,11 @@ class FileRemoteDataSourceImpl implements FileRemoteDataSourceSource {
     print(userEntity.authToken);
 
     try {
+      print('trying to det files ');
       var response = await dio.get(url,
           options: Options(
               headers: {'Authorization': 'Bearer ${userEntity.authToken}'}));
+      print('got the files');
       print(response.data);
       List<dynamic> listOfLocations = response.data['goood'];
       listOfLocations.forEach((element) {

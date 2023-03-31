@@ -9,10 +9,8 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../bloc/premium_bloc/get_premium_bloc.dart';
 
 class GetPremium extends StatelessWidget {
-  GetPremium({Key? key, required this.userEntity, required this.pevcontext})
-      : super(key: key);
+  GetPremium({Key? key, required this.userEntity}) : super(key: key);
   UserEntity userEntity;
-  BuildContext pevcontext;
   var controller = WebViewController()
     ..setJavaScriptMode(JavaScriptMode.unrestricted);
   @override
