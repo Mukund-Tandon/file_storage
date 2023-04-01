@@ -5,20 +5,13 @@ import 'dart:io';
 import 'package:goal_lock/domain/entities/upload_file_entity.dart';
 import 'package:goal_lock/domain/entities/user_entity.dart';
 
+import '../../entities/file_uploading_details_stream_entity.dart';
+
 class UploadFilesUsecase {
   final FileRepository fileRepository;
   UploadFilesUsecase({required this.fileRepository});
-  Future<void> call(UserEntity uploadBy) async {
-    print('Upload file usecase');
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-
-    if (result != null) {
-      File file = File(result.files.single.path!);
-      final UploadFileEntity uploadFileEntity = UploadFileEntity(
-          file: file, filename: result.files.single.name, uploadedBy: uploadBy);
-      await fileRepository.uploadFilesToServer(uploadFileEntity);
-    } else {
-      print('Error');
-    }
+  Stream<FileUploadingFetailStreamEntity>? call(
+      UploadFileEntity uploadFileEntity) {
+    return fileRepository.uploadFilesToServer(uploadFileEntity);
   }
 }

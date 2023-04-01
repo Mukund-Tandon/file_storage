@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:goal_lock/domain/entities/file_uploading_details_stream_entity.dart';
 
 import '../../core/constants.dart';
 import '../../core/get_device_data.dart';
@@ -10,6 +11,7 @@ import '../../domain/usecases/files/upload_files.dart';
 import '../../injection_container.dart';
 import '../bloc/drawer_animation_logic/bloc/drawer_animation_bloc.dart';
 import '../bloc/file_bloc/file_bloc.dart';
+import '../bloc/file_bloc/file_uploading_bloc.dart';
 import '../bloc/user_entity_bloc/user_entity_bloc.dart';
 import '../widgets/premium_and_space.dart';
 import '../widgets/start_button.dart';
@@ -28,7 +30,15 @@ class _HomeScreenState extends State<HomeScreen> {
   double xOffset = 0;
   double yoffset = 0;
   double scalefactor = 1;
+  FileUploadStatus fileUploadStatus = FileUploadStatus.completed;
+  String uploadedFilePercentage = '0';
   bool drawerOpen = false;
+  @override
+  void initState() {
+    context.read<FileBloc>().add(GetFilesEvent(user: widget.userEntity));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     UserEntity userEntity = widget.userEntity;
@@ -140,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           fontSize: 18),
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 10,
                                   ),
                                   Container(
@@ -150,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     child: Text(
                                       'Shared',
                                       style: TextStyle(
-                                          color: Color(0xffEEEDF0)
+                                          color: const Color(0xffEEEDF0)
                                               .withOpacity(0.5),
                                           fontSize: 18),
                                     ),
@@ -164,9 +174,35 @@ class _HomeScreenState extends State<HomeScreen> {
                       GestureDetector(
                         onTap: () async {
                           print('tap');
-                          sl<UploadFilesUsecase>().call(userEntity);
+                          context
+                              .read<FileUploadingBloc>()
+                              .add(UploadFilesEvent(user: userEntity));
                         },
-                        child: const StartButton(),
+                        child:
+                            BlocBuilder<FileUploadingBloc, FileUploadingState>(
+                                builder: (context, state) {
+                          if (state is FilesUploadingStartingState) {
+                            fileUploadStatus = FileUploadStatus.starting;
+                          } else if (state is UploadingFilesStartedState) {
+                            print('Uploading Files Started');
+                            fileUploadStatus = FileUploadStatus.started;
+                            uploadedFilePercentage = state.percentage;
+                          } else if (state is UploadingFilesCompletedState) {
+                            fileUploadStatus = FileUploadStatus.completed;
+                            print('completed');
+                            context
+                                .read<FileBloc>()
+                                .add(GetFilesEvent(user: userEntity));
+                          } else if (state is FilesUploadingErrorState) {
+                            fileUploadStatus = FileUploadStatus.error;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Error in Uploading')));
+                          }
+                          return StartButton(
+                              fileUploadStatus: fileUploadStatus,
+                              percentage: uploadedFilePercentage);
+                        }),
                       ),
                       Expanded(child: BlocBuilder<FileBloc, FileState>(
                           builder: (context, state) {
@@ -233,7 +269,7 @@ class _HomeScreenState extends State<HomeScreen> {
         gridDelegate:
             const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
         itemBuilder: (BuildContext context, int index) {
-          return Image.network(files[index].location);
+          return Image.network(files[index].url);
         },
       );
 }

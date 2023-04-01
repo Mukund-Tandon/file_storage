@@ -36,7 +36,7 @@ class _MainpageState extends State<Mainpage> {
   @override
   void initState() {
     print('Main init');
-    context.read<FileBloc>().add(GetFilesEvent(user: widget.userEntity));
+
     context
         .read<UserEntityBloc>()
         .add(SubcribeToAuthTokenChangeEvent(userEntity: widget.userEntity));

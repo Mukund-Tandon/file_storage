@@ -5,6 +5,7 @@ import 'package:goal_lock/presentation/bloc/auth_bloc/auth_check_cubit.dart';
 import 'package:goal_lock/presentation/bloc/auth_bloc/login_bloc.dart';
 import 'package:goal_lock/presentation/bloc/drawer_animation_logic/bloc/drawer_animation_bloc.dart';
 import 'package:goal_lock/presentation/bloc/file_bloc/file_bloc.dart';
+import 'package:goal_lock/presentation/bloc/file_bloc/file_uploading_bloc.dart';
 import 'package:goal_lock/presentation/bloc/premium_bloc/cancel_subcribtion_bloc.dart';
 import 'package:goal_lock/presentation/bloc/premium_bloc/get_premium_bloc.dart';
 import 'package:goal_lock/presentation/bloc/user_entity_bloc/user_entity_bloc.dart';
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => sl<UserEntityBloc>()),
         BlocProvider(create: (context) => sl<CancelSubcribtionBloc>()),
         BlocProvider(create: (context) => sl<DrawerAnimationBloc>()),
+        BlocProvider(create: (context) => sl<FileUploadingBloc>()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../domain/entities/file_from_server_entity.dart';
+import '../../../domain/entities/file_uploading_details_stream_entity.dart';
 import '../../../domain/entities/user_entity.dart';
 import '../../../domain/usecases/authentication/get_stored_auth_tokens_usecase.dart';
 import '../../../domain/usecases/files/get_files_usecase.dart';
@@ -35,5 +36,24 @@ class FileBloc extends Bloc<FileEvent, FileState> {
         emit(FilesLoadingErrorState());
       }
     });
+    // on<UploadFilesEvent>((event, emit) async {
+    //   emit(FilesUploadingStartingState());
+    //   Stream? uploadingFilestatusStream =
+    //       await uploadFilesUsecase.call(event.user);
+    //   if (uploadingFilestatusStream != null) {
+    //     uploadingFilestatusStream.listen((event) {
+    //       print('Event == $event');
+    //       if (event is FileUploadingFetailStreamEntity) {
+    //         if (event.fileUploadStatus == FileUploadStatus.completed) {
+    //           emit(UploadingFilesCompletedState());
+    //         } else {
+    //           emit(UploadingFilesStartedState(percentage: event.percentage!));
+    //         }
+    //       }
+    //     });
+    //   } else {
+    //     emit(FilesUploadingErrorState());
+    //   }
+    // });
   }
 }
