@@ -13,6 +13,8 @@ import 'package:goal_lock/data/repositories/premium_subcribtion_repository.dart'
 import 'package:goal_lock/data/repositories/user_repository.dart';
 import 'package:goal_lock/domain/usecases/authentication/auth_tokens_change_usecase.dart';
 import 'package:goal_lock/domain/usecases/authentication/get_stored_auth_tokens_usecase.dart';
+import 'package:goal_lock/domain/usecases/files/copy_file_url_to_clipboard_usecase.dart';
+import 'package:goal_lock/domain/usecases/files/dowload_file_from_url_usecase.dart';
 import 'package:goal_lock/domain/usecases/files/get_files_usecase.dart';
 import 'package:goal_lock/domain/usecases/files/upload_files.dart';
 import 'package:goal_lock/domain/usecases/premium/cancel_subcribtion_usecase.dart';
@@ -77,6 +79,10 @@ Future<void> init() async {
       () => UploadFilesUsecase(fileRepository: sl()));
   sl.registerLazySingleton<GetFilesUsecase>(
       () => GetFilesUsecase(fileRepository: sl()));
+  sl.registerLazySingleton<CopyFileUrlToClipBoard>(
+      () => CopyFileUrlToClipBoard());
+  sl.registerLazySingleton<DownloadFileFromurlUsecase>(
+      () => DownloadFileFromurlUsecase());
   //authentication
   sl.registerLazySingleton<AuthTokenChangeUseCase>(
       () => AuthTokenChangeUseCase(authenticationRepository: sl()));

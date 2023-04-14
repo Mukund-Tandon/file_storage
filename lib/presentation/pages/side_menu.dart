@@ -24,7 +24,7 @@ class _SideMenuState extends State<SideMenu> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Column(children: [
-            Container(
+            SizedBox(
                 height: 130,
                 width: width,
                 child: Column(
@@ -32,8 +32,8 @@ class _SideMenuState extends State<SideMenu> {
                   children: [
                     Container(
                       height: 20,
-                      margin: EdgeInsets.only(left: 20),
-                      child: Text(
+                      margin: const EdgeInsets.only(left: 20),
+                      child: const Text(
                         'Recent',
                         style: TextStyle(
                           color: Colors.white,
@@ -51,9 +51,9 @@ class _SideMenuState extends State<SideMenu> {
                 ))
           ]),
           Container(
-            margin: EdgeInsets.only(left: 20, top: 25),
+            margin: const EdgeInsets.only(left: 20, top: 25),
             child: ConstrainedBox(
-              constraints: BoxConstraints(
+              constraints: const BoxConstraints(
                 maxWidth: 190,
                 maxHeight: 150,
               ),
@@ -106,7 +106,7 @@ class SideMenuButton extends StatelessWidget {
           onTap: () {
             print('object');
           },
-          child: Center(
+          child: const Center(
             child: Text(
               'Subcribtion',
               style: TextStyle(

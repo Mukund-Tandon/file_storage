@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:goal_lock/domain/entities/file_uploading_details_stream_entity.dart';
+import 'package:goal_lock/presentation/widgets/FilesGridBoxWidget.dart';
 
 import '../../core/constants.dart';
 import '../../core/get_device_data.dart';
@@ -269,7 +270,10 @@ class _HomeScreenState extends State<HomeScreen> {
         gridDelegate:
             const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
         itemBuilder: (BuildContext context, int index) {
-          return Image.network(files[index].url);
+          return FileGridBoxWidget(
+            file: files[index],
+            mainContext: context,
+          );
         },
       );
 }

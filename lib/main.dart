@@ -1,5 +1,9 @@
+import 'dart:isolate';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:goal_lock/hive_objects.dart';
 import 'package:goal_lock/presentation/bloc/auth_bloc/auth_check_cubit.dart';
 import 'package:goal_lock/presentation/bloc/auth_bloc/login_bloc.dart';
@@ -23,16 +27,50 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
+  await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
+  FlutterDownloader.registerCallback(downloadCallback);
   await Hive.initFlutter();
   await di.init();
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+void downloadCallback(String id, DownloadTaskStatus status, int progress) {
+  final SendPort send =
+      IsolateNameServer.lookupPortByName('downloader_send_port')!;
+  send.send([id, status, progress]);
+}
+
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
+  final ReceivePort _port = ReceivePort();
+
+  @override
+  void initState() {
+    super.initState();
+    IsolateNameServer.registerPortWithName(
+        _port.sendPort, 'downloader_send_port');
+    _port.listen((dynamic data) {
+      String id = data[0];
+      DownloadTaskStatus status = data[1];
+      int progress = data[2];
+      setState(() {});
+    });
+    FlutterDownloader.registerCallback(downloadCallback);
+  }
+
+  @override
+  void dispose() {
+    IsolateNameServer.removePortNameMapping('downloader_send_port');
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
