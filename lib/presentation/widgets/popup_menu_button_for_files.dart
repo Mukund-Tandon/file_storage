@@ -1,3 +1,4 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:goal_lock/domain/usecases/files/dowload_file_from_url_usecase.dart';
 import 'package:goal_lock/presentation/widgets/share_file_dialog.dart';
 
@@ -5,6 +6,7 @@ import '../../domain/entities/file_from_server_entity.dart';
 import 'package:flutter/material.dart';
 
 import '../../injection_container.dart';
+import '../bloc/file_bloc/recently_accessed_files_bloc.dart';
 
 class PopupMenuButtonForFiles extends StatelessWidget {
   const PopupMenuButtonForFiles({
@@ -50,6 +52,8 @@ class PopupMenuButtonForFiles extends StatelessWidget {
       onSelected: (value) {
         print(value);
         if (value == 'Share') {
+          context.read<RecentlyAccessedFilesBloc>().add(
+              UpdateRecentlyAccessedFilesEvent(recentlyAccessedFile: file));
           showDialog(
               context: mainContext,
               builder: (context) {
@@ -57,6 +61,8 @@ class PopupMenuButtonForFiles extends StatelessWidget {
               });
         } else if (value == 'Download') {
           print('Download');
+          context.read<RecentlyAccessedFilesBloc>().add(
+              UpdateRecentlyAccessedFilesEvent(recentlyAccessedFile: file));
           sl<DownloadFileFromurlUsecase>().call(file.url, file.name);
         }
       },

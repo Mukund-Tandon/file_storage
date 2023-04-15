@@ -8,12 +8,14 @@ import 'package:goal_lock/domain/usecases/files/upload_files.dart';
 import 'package:goal_lock/domain/usecases/user/update_user_field_usecase.dart';
 import 'package:goal_lock/injection_container.dart';
 import 'package:goal_lock/presentation/bloc/file_bloc/file_bloc.dart';
+import 'package:goal_lock/presentation/bloc/file_bloc/recently_accessed_files_bloc.dart';
 import 'package:goal_lock/presentation/bloc/user_entity_bloc/user_entity_bloc.dart';
 import 'package:goal_lock/presentation/pages/authentication.dart';
 import 'package:goal_lock/presentation/pages/home_screen.dart';
 import 'package:goal_lock/presentation/pages/side_menu.dart';
 import 'package:goal_lock/presentation/widgets/premium_and_space.dart';
 import 'package:goal_lock/presentation/widgets/start_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/entities/file_from_server_entity.dart';
 
@@ -27,7 +29,7 @@ class Mainpage extends StatefulWidget {
 
 class _MainpageState extends State<Mainpage> {
   String user = 'Mukund';
-
+  SharedPreferences prefs = sl<SharedPreferences>();
   List<FileFromServerEntity> files = [];
   // Future<void> doTask() async {
   //   var status = await Permission.phone.isRestricted;
@@ -40,6 +42,7 @@ class _MainpageState extends State<Mainpage> {
     context
         .read<UserEntityBloc>()
         .add(SubcribeToAuthTokenChangeEvent(userEntity: widget.userEntity));
+
     super.initState();
   }
 
@@ -58,7 +61,7 @@ class _MainpageState extends State<Mainpage> {
           backgroundColor: const Color(0xff17181F),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              sl<UpdateUserFieldUsecase>().call('premium', false);
+              prefs.remove('recentlyAccessed');
             },
           ),
           body: Stack(

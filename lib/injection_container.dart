@@ -16,6 +16,7 @@ import 'package:goal_lock/domain/usecases/authentication/get_stored_auth_tokens_
 import 'package:goal_lock/domain/usecases/files/copy_file_url_to_clipboard_usecase.dart';
 import 'package:goal_lock/domain/usecases/files/dowload_file_from_url_usecase.dart';
 import 'package:goal_lock/domain/usecases/files/get_files_usecase.dart';
+import 'package:goal_lock/domain/usecases/files/update_recently_used_files_usecase.dart';
 import 'package:goal_lock/domain/usecases/files/upload_files.dart';
 import 'package:goal_lock/domain/usecases/premium/cancel_subcribtion_usecase.dart';
 import 'package:goal_lock/domain/usecases/premium/connect_to_payment_websocket.dart';
@@ -29,12 +30,16 @@ import 'package:goal_lock/presentation/bloc/auth_bloc/login_bloc.dart';
 import 'package:goal_lock/presentation/bloc/drawer_animation_logic/bloc/drawer_animation_bloc.dart';
 import 'package:goal_lock/presentation/bloc/file_bloc/file_bloc.dart';
 import 'package:goal_lock/presentation/bloc/file_bloc/file_uploading_bloc.dart';
+import 'package:goal_lock/presentation/bloc/file_bloc/recently_accessed_files_bloc.dart';
 import 'package:goal_lock/presentation/bloc/premium_bloc/cancel_subcribtion_bloc.dart';
 import 'package:goal_lock/presentation/bloc/premium_bloc/get_premium_bloc.dart';
 import 'package:goal_lock/presentation/bloc/user_entity_bloc/user_entity_bloc.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'data/datasources/localDataSource/files/files_local_data_source.dart';
 import 'domain/usecases/authentication/store_auth_tokens_usecase.dart';
+import 'domain/usecases/files/get_recently_accessed_files_usecase.dart';
 
 final sl = GetIt.instance;
 
@@ -66,6 +71,9 @@ Future<void> init() async {
   sl.registerFactory<DrawerAnimationBloc>(() => DrawerAnimationBloc());
   sl.registerFactory(() => FileUploadingBloc(
       uploadFilesUsecase: sl(), getStoredAuthTokenUsecase: sl()));
+  sl.registerFactory<RecentlyAccessedFilesBloc>(() => RecentlyAccessedFilesBloc(
+      updateRecentlyAccessedFilesUsecase: sl(),
+      getRecentlyAccessedFilesUseCase: sl()));
   //Usecase
   sl.registerLazySingleton<ConnectToPaymtWebsocket>(
       () => ConnectToPaymtWebsocket(premiumSubscribtionRepository: sl()));
@@ -83,6 +91,10 @@ Future<void> init() async {
       () => CopyFileUrlToClipBoard());
   sl.registerLazySingleton<DownloadFileFromurlUsecase>(
       () => DownloadFileFromurlUsecase());
+  sl.registerLazySingleton<GetRecentlyAccessedFilesUseCase>(
+      () => GetRecentlyAccessedFilesUseCase(fileRepository: sl()));
+  sl.registerLazySingleton<UpdateRecentlyAccessedFilesUsecase>(
+      () => UpdateRecentlyAccessedFilesUsecase(fileRepository: sl()));
   //authentication
   sl.registerLazySingleton<AuthTokenChangeUseCase>(
       () => AuthTokenChangeUseCase(authenticationRepository: sl()));
@@ -100,8 +112,8 @@ Future<void> init() async {
   sl.registerLazySingleton(() => UpdateUserFieldUsecase(userRepository: sl()));
 
   //Repository
-  sl.registerLazySingleton<FileRepository>(
-      () => FileRepositoryImpl(fileRemoteDataSourceSource: sl()));
+  sl.registerLazySingleton<FileRepository>(() => FileRepositoryImpl(
+      fileRemoteDataSourceSource: sl(), filesLocalDataSource: sl()));
   sl.registerLazySingleton<AuthenticationRepository>(() =>
       AuthenticationRepositoryImpl(
           authenticationLocalDataSource: sl(),
@@ -121,7 +133,8 @@ Future<void> init() async {
   //file
   sl.registerLazySingleton<FileRemoteDataSourceSource>(
       () => FileRemoteDataSourceImpl(dio: sl()));
-
+  sl.registerLazySingleton<FilesLocalDataSource>(
+      () => FilesLocalDataSourceImpl(sharedPreferences: sl()));
   //Authentication
   sl.registerLazySingleton<AuthenticationLocalDataSource>(
       () => AuthenticationLocalDataSourceImpl(storage: sl()));
@@ -148,4 +161,8 @@ Future<void> init() async {
   //Hive
   final Box box = await Hive.openBox('UserDetails');
   sl.registerLazySingleton<Box>(() => box);
+
+  //Shared Preferences
+  final sp = await SharedPreferences.getInstance();
+  sl.registerLazySingleton(() => sp);
 }

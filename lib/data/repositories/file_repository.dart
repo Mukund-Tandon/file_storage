@@ -6,16 +6,23 @@ import 'package:goal_lock/domain/entities/file_uploading_details_stream_entity.d
 import 'package:goal_lock/domain/entities/user_entity.dart';
 
 import '../../domain/entities/upload_file_entity.dart';
+import '../datasources/localDataSource/files/files_local_data_source.dart';
 
 abstract class FileRepository {
   Stream<FileUploadingFetailStreamEntity>? uploadFilesToServer(
       UploadFileEntity uploadFileEntity);
   Future<List<FileFromServerEntity>> getFiles(UserEntity userEntity);
+  Future<void> updateRecentlyUsedFiles(
+      FileFromServerEntity recentlyUsedFilesEntity);
+  List<FileFromServerEntity> getRecentlyUsedFiles();
 }
 
 class FileRepositoryImpl implements FileRepository {
   final FileRemoteDataSourceSource fileRemoteDataSourceSource;
-  FileRepositoryImpl({required this.fileRemoteDataSourceSource});
+  final FilesLocalDataSource filesLocalDataSource;
+  FileRepositoryImpl(
+      {required this.fileRemoteDataSourceSource,
+      required this.filesLocalDataSource});
   @override
   Stream<FileUploadingFetailStreamEntity>? uploadFilesToServer(
       UploadFileEntity uploadFileEntity) {
@@ -25,5 +32,34 @@ class FileRepositoryImpl implements FileRepository {
   @override
   Future<List<FileFromServerEntity>> getFiles(UserEntity userEntity) {
     return fileRemoteDataSourceSource.getFilesFromServer(userEntity);
+  }
+
+  @override
+  Future<void> updateRecentlyUsedFiles(
+      FileFromServerEntity recentlyUsedFilesEntity) async {
+    List recentlyaccessedFiles =
+        filesLocalDataSource.getRecentlyAccessed()?['files'] ?? [];
+
+    Map<String, List> updatedRecentlyAccessedFiles = {'files': []};
+
+    recentlyaccessedFiles.removeWhere(
+        (element) => element['name'] == recentlyUsedFilesEntity.name);
+
+    recentlyaccessedFiles.insert(0, recentlyUsedFilesEntity.toJson());
+
+    updatedRecentlyAccessedFiles['files'] = recentlyaccessedFiles;
+    await filesLocalDataSource
+        .updateRecentlyAccessed(updatedRecentlyAccessedFiles);
+  }
+
+  @override
+  List<FileFromServerEntity> getRecentlyUsedFiles() {
+    List recentlyaccessedFiles =
+        filesLocalDataSource.getRecentlyAccessed()?['files'] ?? [];
+    List<FileFromServerEntity> files = [];
+    for (var file in recentlyaccessedFiles) {
+      files.add(FileFromServerEntity.fromJson(file));
+    }
+    return files;
   }
 }

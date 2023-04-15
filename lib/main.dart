@@ -10,6 +10,7 @@ import 'package:goal_lock/presentation/bloc/auth_bloc/login_bloc.dart';
 import 'package:goal_lock/presentation/bloc/drawer_animation_logic/bloc/drawer_animation_bloc.dart';
 import 'package:goal_lock/presentation/bloc/file_bloc/file_bloc.dart';
 import 'package:goal_lock/presentation/bloc/file_bloc/file_uploading_bloc.dart';
+import 'package:goal_lock/presentation/bloc/file_bloc/recently_accessed_files_bloc.dart';
 import 'package:goal_lock/presentation/bloc/premium_bloc/cancel_subcribtion_bloc.dart';
 import 'package:goal_lock/presentation/bloc/premium_bloc/get_premium_bloc.dart';
 import 'package:goal_lock/presentation/bloc/user_entity_bloc/user_entity_bloc.dart';
@@ -84,6 +85,7 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (context) => sl<CancelSubcribtionBloc>()),
         BlocProvider(create: (context) => sl<DrawerAnimationBloc>()),
         BlocProvider(create: (context) => sl<FileUploadingBloc>()),
+        BlocProvider(create: (context) => sl<RecentlyAccessedFilesBloc>()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

@@ -15,17 +15,17 @@ class FileFromServerEntity {
   String url;
   String name;
   FileType fileType;
-  DateTime createdAt;
+  DateTime created_at;
   FileFromServerEntity(
       {required this.url,
       required this.name,
-      required this.createdAt,
+      required this.created_at,
       required this.fileType});
   Map<String, dynamic> toJson() {
     return {
       'url': url,
       'name': name,
-      'createdAt': createdAt,
+      'created_at': created_at.toString(),
       'fileType': fileType.value()
     };
   }
@@ -35,6 +35,6 @@ class FileFromServerEntity {
         url: json['url'],
         name: json['name'],
         fileType: FileTypeParser.fromString(json['fileType']),
-        createdAt: DateTime.parse(json['created_at']));
+        created_at: DateTime.parse(json['created_at']));
   }
 }

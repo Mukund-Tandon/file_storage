@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:goal_lock/domain/entities/user_entity.dart';
 import 'package:goal_lock/presentation/widgets/premium_and_space.dart';
 
+import '../bloc/file_bloc/recently_accessed_files_bloc.dart';
 import '../bloc/user_entity_bloc/user_entity_bloc.dart';
+import '../widgets/recently_acccessed_widget.dart';
 
 class SideMenu extends StatefulWidget {
   final UserEntity userEntity;
@@ -15,6 +17,15 @@ class SideMenu extends StatefulWidget {
 
 class _SideMenuState extends State<SideMenu> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    context
+        .read<RecentlyAccessedFilesBloc>()
+        .add(LoadRecentlyAccessedFilesEvent());
+  }
+
+  @override
   Widget build(BuildContext context) {
     UserEntity userEntity = widget.userEntity;
     double width = MediaQuery.of(context).size.width;
@@ -25,30 +36,27 @@ class _SideMenuState extends State<SideMenu> {
         children: [
           Column(children: [
             SizedBox(
-                height: 130,
-                width: width,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: 20,
-                      margin: const EdgeInsets.only(left: 20),
-                      child: const Text(
-                        'Recent',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                        ),
+              height: 130,
+              width: width,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 20,
+                    margin: const EdgeInsets.only(left: 20),
+                    child: const Text(
+                      'Recent',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                    Container(
-                      height: 100,
-                      width: width,
-                      color: Colors.grey.withOpacity(0.2),
-                    ),
-                  ],
-                ))
+                  ),
+                  RecentlyAccesedWidget(width: width),
+                ],
+              ),
+            ),
           ]),
           Container(
             margin: const EdgeInsets.only(left: 20, top: 25),
