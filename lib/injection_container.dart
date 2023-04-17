@@ -52,7 +52,8 @@ Future<void> init() async {
   sl.registerFactory<AuthCheckCubit>(() => AuthCheckCubit(
       storeAuthTokenUsecase: sl(),
       authTokenChangeUseCase: sl(),
-      getLocalyStoredUserDetailsUsecase: sl()));
+      getLocalyStoredUserDetailsUsecase: sl(),
+      storeSubcribtionDetails: sl()));
   sl.registerFactory<LoginBloc>(() => LoginBloc(
       authTokenChangeUseCase: sl(),
       storeAuthTokenUsecase: sl(),

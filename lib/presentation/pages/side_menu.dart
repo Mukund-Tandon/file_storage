@@ -6,6 +6,7 @@ import 'package:goal_lock/presentation/widgets/premium_and_space.dart';
 import '../bloc/file_bloc/recently_accessed_files_bloc.dart';
 import '../bloc/user_entity_bloc/user_entity_bloc.dart';
 import '../widgets/recently_acccessed_widget.dart';
+import 'get_premium.dart';
 
 class SideMenu extends StatefulWidget {
   final UserEntity userEntity;
@@ -85,9 +86,17 @@ class _SideMenuState extends State<SideMenu> {
               ),
             ),
           ),
-          SideMenuButton(),
-          SideMenuButton(),
-          SideMenuButton(),
+          SideMenuButton(
+            buttonTitle: 'Subscription',
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => GetPremium(
+                            userEntity: userEntity,
+                          )));
+            },
+          ),
         ],
       ),
     );
@@ -97,13 +106,16 @@ class _SideMenuState extends State<SideMenu> {
 class SideMenuButton extends StatelessWidget {
   const SideMenuButton({
     super.key,
+    required this.buttonTitle,
+    required this.onTap,
   });
-
+  final String buttonTitle;
+  final VoidCallback onTap;
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 60,
-      width: 150,
+      width: 160,
       margin: EdgeInsets.only(left: 20, top: 25),
       child: Material(
         color: Colors.transparent,
@@ -111,13 +123,11 @@ class SideMenuButton extends StatelessWidget {
           splashColor: Colors.grey.withOpacity(0.4),
           canRequestFocus: false,
           borderRadius: BorderRadius.circular(20),
-          onTap: () {
-            print('object');
-          },
-          child: const Center(
+          onTap: onTap,
+          child: Center(
             child: Text(
-              'Subcribtion',
-              style: TextStyle(
+              buttonTitle,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 25,
                 fontWeight: FontWeight.w500,

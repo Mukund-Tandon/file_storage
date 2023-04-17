@@ -31,6 +31,9 @@ class PremiumSubcribtionRepositoryImpl
     if (subcribtionDetailEntity != null) {
       await userLocalDataSource
           .storeSubcribtionDetailsLocally(subcribtionDetailEntity);
+    } else {
+      print('setting premium false');
+      await userLocalDataSource.updateField('premium', false);
     }
   }
 

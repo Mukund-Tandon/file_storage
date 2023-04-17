@@ -78,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
               duration: const Duration(milliseconds: 200),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                  color: Color(0xff17181F),
+                  color: const Color(0xff17181F),
                   boxShadow: [
                     BoxShadow(
                       color: drawerOpen ? Colors.white : Colors.transparent,
@@ -87,16 +87,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ]),
               child: BlocBuilder<UserEntityBloc, UserEntityState>(
                 builder: (context, state) {
-                  if (state is UserEntityLoadingState) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  if (state is UserEntityChangedState) {
-                    userEntity = state.userEntity;
-                    print('change is here');
-                    print(userEntity.premium);
-                  }
                   return Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [

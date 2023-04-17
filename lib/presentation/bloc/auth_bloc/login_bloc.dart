@@ -49,7 +49,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           print('Auth token sorted');
           UserEntity? user =
               await getuserDetailsFromServerUsecase.call(userEntity);
-          print(user);
+          print(user?.premium);
           if (user != null) {
             print('Got user details');
             await storeUserDetailsLocallyUsecase.call(user);

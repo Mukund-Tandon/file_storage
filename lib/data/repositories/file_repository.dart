@@ -44,7 +44,9 @@ class FileRepositoryImpl implements FileRepository {
 
     recentlyaccessedFiles.removeWhere(
         (element) => element['name'] == recentlyUsedFilesEntity.name);
-
+    if (recentlyaccessedFiles.length >= 10) {
+      recentlyaccessedFiles.removeLast();
+    }
     recentlyaccessedFiles.insert(0, recentlyUsedFilesEntity.toJson());
 
     updatedRecentlyAccessedFiles['files'] = recentlyaccessedFiles;

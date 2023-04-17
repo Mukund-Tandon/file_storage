@@ -24,14 +24,7 @@ class PremiumAndSpace extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         children: [
           GestureDetector(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => GetPremium(
-                            userEntity: userEntity,
-                          )));
-            },
+            onTap: () {},
             child: Container(
               height: 60,
               child: Icon(Icons.star),
@@ -114,7 +107,7 @@ class PremiumAndSpace extends StatelessWidget {
                         barrierColor: Color(0x0fEEEDF0));
                   },
                   child: Container(
-                    height: 60,
+                    height: 20,
                     width: 100,
                     child: Icon(Icons.cancel),
                   ),

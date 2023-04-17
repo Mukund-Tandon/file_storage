@@ -21,6 +21,7 @@ import '../../domain/entities/file_from_server_entity.dart';
 
 class Mainpage extends StatefulWidget {
   final UserEntity userEntity;
+
   const Mainpage({Key? key, required this.userEntity}) : super(key: key);
 
   @override
@@ -31,6 +32,7 @@ class _MainpageState extends State<Mainpage> {
   String user = 'Mukund';
   SharedPreferences prefs = sl<SharedPreferences>();
   List<FileFromServerEntity> files = [];
+
   // Future<void> doTask() async {
   //   var status = await Permission.phone.isRestricted;
   //   print(status);
@@ -64,13 +66,27 @@ class _MainpageState extends State<Mainpage> {
               prefs.remove('recentlyAccessed');
             },
           ),
-          body: Stack(
-            children: [
-              SideMenu(
-                userEntity: userEntity,
-              ),
-              HomeScreen(userEntity: userEntity)
-            ],
+          body: BlocBuilder<UserEntityBloc, UserEntityState>(
+            builder: (context, state) {
+              if (state is UserEntityLoadingState) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (state is UserEntityChangedState) {
+                userEntity = state.userEntity;
+                print('change is here');
+                print(userEntity.premium);
+              }
+              return Stack(
+                children: [
+                  SideMenu(
+                    userEntity: userEntity,
+                  ),
+                  HomeScreen(userEntity: userEntity)
+                ],
+              );
+            },
           )),
     );
   }

@@ -44,11 +44,12 @@ class PremiumRemoteDataSourceImpl implements PremiumRemoteDataSource {
   Future<SubcribtionDetailEntity?> getSubcribtionDetails(
       UserEntity userEntity) async {
     String url = "http://$ip:8000/subcribtion_details/${userEntity.uid}";
+    print('url: $url');
     try {
       var response = await dio.get(url,
           options: Options(
               headers: {'Authorization': 'Bearer ${userEntity.authToken}'}));
-      print(response.data);
+      print('${response.data} =====');
       if (!response.data['subcribtion_status']) {
         return null;
       }
@@ -56,6 +57,7 @@ class PremiumRemoteDataSourceImpl implements PremiumRemoteDataSource {
           response.data['subcribtion_details']);
     } catch (e) {
       print('error');
+      print(e);
       return null;
     }
   }

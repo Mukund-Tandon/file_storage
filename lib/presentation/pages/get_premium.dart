@@ -4,9 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:goal_lock/domain/entities/user_entity.dart';
 
 import 'package:goal_lock/presentation/bloc/user_entity_bloc/user_entity_bloc.dart';
+import 'package:goal_lock/presentation/widgets/premium_user_subcribtion_widget.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../bloc/premium_bloc/get_premium_bloc.dart';
+import '../widgets/get_premium_widget.dart';
 
 class GetPremium extends StatelessWidget {
   GetPremium({Key? key, required this.userEntity}) : super(key: key);
@@ -22,53 +24,12 @@ class GetPremium extends StatelessWidget {
       ),
       child: Scaffold(
         backgroundColor: const Color(0xff17181F),
-        body: SafeArea(child: BlocBuilder<GetPremiumBloc, GetPremiumState>(
-          builder: (context, state) {
-            if (state is PaymentStartedState) {
-              print(state.url);
-              controller.loadRequest(Uri.parse(state.url));
-
-              return WebViewWidget(controller: controller);
-            } else if (state is GetPremiumLoadingState) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (state is PaymentCompletedState) {
-              return Center(
-                //TODO remove prevcontext
-                child: Column(
-                  children: [
-                    Text('Payment Completed'),
-                    TextButton(
-                        onPressed: () {
-                          context.read<UserEntityBloc>().add(
-                              UserEntityChangeEvent(userEntity: userEntity));
-                          Navigator.pop(context);
-                          // context.read<UserEntityBloc>().add(
-                          //     UserEntityChangeEvent(userEntity: userEntity));
-                          // Navigator.pop(context);
-                        },
-                        child: Text('Back To Home'))
-                  ],
-                ),
-              );
-            } else {
-              return Center(
-                //TODO:Add Handle Error State
-                child: TextButton(
-                  onPressed: () {
-                    context
-                        .read<GetPremiumBloc>()
-                        .add(StartPaymentEvent(userEntity: userEntity));
-                  },
-                  child: Text('Get Premium'),
-                ),
-              );
-            }
-          },
-        )),
+        body: userEntity.premium
+            ? PremiumUserSubcribtion(userEntity: userEntity)
+            : GetPremiumWidget(controller: controller, userEntity: userEntity),
       ),
     );
   }
 }
+
 //TODO:check for error while subscribing and also implement the logic of canceling subscribtion

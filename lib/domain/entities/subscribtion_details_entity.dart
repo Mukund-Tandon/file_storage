@@ -5,6 +5,6 @@ class SubcribtionDetailEntity {
 
   factory SubcribtionDetailEntity.fromJson(Map<String, dynamic> json) {
     return SubcribtionDetailEntity(
-        cancelled: json['cancelled'], endTime: json['end_time']);
+        cancelled: json['cancelled'], endTime: json['end_time'].toString());
   }
 }
