@@ -8,6 +8,16 @@ class PremiumAndSpace extends StatelessWidget {
   final UserEntity userEntity;
   PremiumAndSpace({Key? key, required this.userEntity}) : super(key: key);
 
+  _spaceDetails() {
+    if (userEntity.space > 1) {
+      return '${userEntity.space.toStringAsFixed(2)} GB';
+    } else if (userEntity.space < 0.001) {
+      return '${(userEntity.space * 1000000).toStringAsFixed(2)} KB';
+    } else {
+      return '${(userEntity.space * 1000).toStringAsFixed(2)} MB';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -23,96 +33,49 @@ class PremiumAndSpace extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         children: [
-          GestureDetector(
-            onTap: () {},
-            child: Container(
-              height: 60,
-              child: Icon(Icons.star),
-            ),
+          const SizedBox(
+            height: 10,
           ),
-          Container(
-            height: 20,
-            margin: EdgeInsets.only(left: 20),
+          const Center(
             child: Text(
-              'Recent',
+              'Space Used',
               style: TextStyle(
+                fontSize: 20,
                 color: Colors.white,
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          // Container(
-          //   color: Colors.green,
-          //   height: 10,
-          // ),
-          // Row(
-          //   mainAxisSize: MainAxisSize.max,
-          //   children: [
-          //     Container(
-          //       height: 60,
-          //       color: Colors.pink,
-          //     ),
-          //     Container(
-          //       height: 60,
-          //       color: Colors.pink,
-          //     )
-          //   ],
-          // ),
-          Container(
-            child: Row(
-              children: [
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: 150,
-                  ),
-                  child: Container(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: LinearProgressIndicator(
-                        value: userEntity.premium
-                            ? (userEntity.space / 100)
-                            : (userEntity.space / 100) + 0.2,
-                        color: Colors.blueGrey.shade500,
-                        backgroundColor: Colors.grey.withOpacity(0.7),
-                        minHeight: 7,
-                      ),
-                    ),
+          const SizedBox(height: 20),
+          Center(
+            child: Text(_spaceDetails(),
+                style: const TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                )),
+          ),
+          const SizedBox(height: 20),
+          Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: 150,
+              ),
+              child: Container(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: LinearProgressIndicator(
+                    value: userEntity.premium
+                        ? (userEntity.space / 1000)
+                        : (userEntity.space / 10),
+                    color: Colors.blueGrey.shade500,
+                    backgroundColor: Colors.grey.withOpacity(0.7),
+                    minHeight: 7,
                   ),
                 ),
-                Container(
-                  child: Text(
-                    '${(userEntity.space / 100) * 100}%',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                )
-              ],
+              ),
             ),
           ),
-          userEntity.premium && !userEntity.subcribtionDetailsEntity!.cancelled
-              ? GestureDetector(
-                  onTap: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return CancelSubscriptionDialog(
-                            userEntity: userEntity,
-                          );
-                        },
-                        barrierDismissible: true,
-                        barrierColor: Color(0x0fEEEDF0));
-                  },
-                  child: Container(
-                    height: 20,
-                    width: 100,
-                    child: Icon(Icons.cancel),
-                  ),
-                )
-              : Container()
         ],
       ),
     );

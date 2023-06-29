@@ -37,10 +37,11 @@ class UserEntityBloc extends Bloc<UserEntityEvent, UserEntityState> {
       });
     });
     on<UserEntityChangeEvent>((event, emit) {
+      print('user entity changes');
       add(UserEntityLoadingStateEvent());
       UserEntity? user =
           getLocalyStoredUserDetailsUsecase.call(event.userEntity);
-      print('user entity changes');
+
       print(user?.premium);
       add(UserEntityStateChangeEvent(userEntity: user!));
     });

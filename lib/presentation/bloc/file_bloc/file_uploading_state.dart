@@ -10,7 +10,6 @@ class FileUploadingInitial extends FileUploadingState {
 }
 
 class FilesUploadingErrorState extends FileUploadingState {
-  FilesUploadingErrorState();
   @override
   List<Object?> get props => [];
 }
@@ -23,13 +22,16 @@ class UploadingFilesStartedState extends FileUploadingState {
 }
 
 class UploadingFilesCompletedState extends FileUploadingState {
-  UploadingFilesCompletedState();
   @override
   List<Object?> get props => [];
 }
 
 class FilesUploadingStartingState extends FileUploadingState {
-  FilesUploadingStartingState();
+  @override
+  List<Object?> get props => [];
+}
+
+class UploadingFilesExceededState extends FileUploadingState {
   @override
   List<Object?> get props => [];
 }

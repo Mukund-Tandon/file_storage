@@ -30,6 +30,10 @@ class GetPremiumWidget extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
         } else if (state is PaymentCompletedState) {
+          print('PaymentCompletedState');
+          context
+              .read<UserEntityBloc>()
+              .add(UserEntityChangeEvent(userEntity: userEntity));
           return Center(
             //TODO remove prevcontext
             child: Column(
@@ -37,9 +41,6 @@ class GetPremiumWidget extends StatelessWidget {
                 Text('Payment Completed'),
                 TextButton(
                     onPressed: () {
-                      context
-                          .read<UserEntityBloc>()
-                          .add(UserEntityChangeEvent(userEntity: userEntity));
                       Navigator.pop(context);
                       // context.read<UserEntityBloc>().add(
                       //     UserEntityChangeEvent(userEntity: userEntity));

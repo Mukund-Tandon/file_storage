@@ -25,6 +25,7 @@ class CancelSubscriptionDialog extends StatelessWidget {
               cancellingInProgress = true;
             }
             if (state is CancelSubcribtionFinishedState) {
+              print('CancelSubcribtionFinishedState');
               context
                   .read<UserEntityBloc>()
                   .add(UserEntityChangeEvent(userEntity: state.userEntity));

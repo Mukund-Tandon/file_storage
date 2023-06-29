@@ -36,6 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool drawerOpen = false;
   @override
   void initState() {
+    print('djsfdkjsfds');
     context.read<FileBloc>().add(GetFilesEvent(user: widget.userEntity));
     super.initState();
   }
@@ -85,168 +86,116 @@ class _HomeScreenState extends State<HomeScreen> {
                       blurRadius: 20.0,
                     )
                   ]),
-              child: BlocBuilder<UserEntityBloc, UserEntityState>(
-                builder: (context, state) {
-                  return Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      TextButton(
-                          onPressed: () {
-                            BlocProvider.of<DrawerAnimationBloc>(context).add(
-                                DrawerOpenCloseEvent(
-                                    openClose: OpenClose.open));
-                          },
-                          child: Text('press')),
-                      // PremiumAndSpace(userEntity: userEntity),
-                      Container(
-                        height: 90,
-                        width: displayWidth(context),
-                        child: Container(
-                          width: displayWidth(context) / 1.5,
-                          height: 120,
-                          child: Column(
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  final _auth = FirebaseAuth.instance;
-                                  _auth.signOut();
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const AuthenticationScreen()),
-                                      (route) => false);
-                                },
-                                child: Container(
-                                  margin:
-                                      const EdgeInsets.only(left: 10, top: 10),
-                                  alignment: Alignment.centerLeft,
-                                  child: const Text(
-                                    '----',
-                                    style: TextStyle(
-                                        color: Color(0xff7A7C7F), fontSize: 21),
-                                  ),
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(
-                                        left: 10, top: 10),
-                                    alignment: Alignment.centerLeft,
-                                    child: const Text(
-                                      'Uploads',
-                                      style: TextStyle(
-                                          color: Color(0xffEEEDF0),
-                                          fontSize: 18),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.only(
-                                        left: 10, top: 10),
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      'Shared',
-                                      style: TextStyle(
-                                          color: const Color(0xffEEEDF0)
-                                              .withOpacity(0.5),
-                                          fontSize: 18),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () async {
-                          print('tap');
-                          context
-                              .read<FileUploadingBloc>()
-                              .add(UploadFilesEvent(user: userEntity));
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: TextButton(
+                        onPressed: () {
+                          BlocProvider.of<DrawerAnimationBloc>(context).add(
+                              DrawerOpenCloseEvent(openClose: OpenClose.open));
                         },
-                        child:
-                            BlocBuilder<FileUploadingBloc, FileUploadingState>(
-                                builder: (context, state) {
-                          if (state is FilesUploadingStartingState) {
-                            fileUploadStatus = FileUploadStatus.starting;
-                          } else if (state is UploadingFilesStartedState) {
-                            print('Uploading Files Started');
-                            fileUploadStatus = FileUploadStatus.started;
-                            uploadedFilePercentage = state.percentage;
-                          } else if (state is UploadingFilesCompletedState) {
-                            fileUploadStatus = FileUploadStatus.completed;
-                            print('completed');
-                            context
-                                .read<FileBloc>()
-                                .add(GetFilesEvent(user: userEntity));
-                          } else if (state is FilesUploadingErrorState) {
-                            fileUploadStatus = FileUploadStatus.error;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Error in Uploading')));
-                          }
-                          return StartButton(
-                              fileUploadStatus: fileUploadStatus,
-                              percentage: uploadedFilePercentage);
-                        }),
-                      ),
-                      Expanded(child: BlocBuilder<FileBloc, FileState>(
-                          builder: (context, state) {
-                        if (state is FilesLoadedState) {
-                          files = state.files;
-                          return _gridListOfFiles();
-                        } else if (state is FilesLoadingErrorState) {
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const AuthenticationScreen()),
-                              (route) => false);
+                        child: const Icon(
+                          Icons.menu,
+                          color: Colors.white,
+                        )),
+                  ),
+                  // PremiumAndSpace(userEntity: userEntity),
 
-                          return Container();
-                        } else {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                      }))
-                      // Container(
-                      //   color: Colors.yellow,
-                      //   height: 200,
-                      //   width: 200,
-                      //   child: Image.network(
-                      //     'http://159.65.151.168/media/email@gmail.com/download_kLnDmi7.jpeg',
-                      //     loadingBuilder: (BuildContext context, Widget child,
-                      //         ImageChunkEvent? loadingProgress) {
-                      //       if (loadingProgress == null) {
-                      //         return child;
-                      //       }
-                      //       return Container(
-                      //         color: Colors.red,
-                      //       );
-                      //     },
-                      //     // errorBuilder: (BuildContext context, Object exception,
-                      //     //     StackTrace? stackTrace) {
-                      //     //   // Appropriate logging or analytics, e.g.
-                      //     //   // myAnalytics.recordError(
-                      //     //   //   'An error occurred loading "https://example.does.not.exist/image.jpg"',
-                      //     //   //   exception,
-                      //     //   //   stackTrace,
-                      //     //   // );
-                      //     //   return Container(
-                      //     //     color: Colors.red,
-                      //     //   );
-                      //     // },
-                      //   ),
-                      // )
-                    ],
-                  );
-                },
+                  GestureDetector(
+                    onTap: () async {
+                      print('tap');
+                      context
+                          .read<FileUploadingBloc>()
+                          .add(UploadFilesEvent(user: userEntity));
+                    },
+                    child: BlocBuilder<FileUploadingBloc, FileUploadingState>(
+                        builder: (context, state) {
+                      if (state is FilesUploadingStartingState) {
+                        fileUploadStatus = FileUploadStatus.starting;
+                      } else if (state is UploadingFilesStartedState) {
+                        print('Uploading Files Started');
+                        fileUploadStatus = FileUploadStatus.started;
+                        uploadedFilePercentage = state.percentage;
+                      } else if (state is UploadingFilesCompletedState) {
+                        fileUploadStatus = FileUploadStatus.completed;
+                        print('UploadingFilesCompletedState');
+                        context
+                            .read<FileBloc>()
+                            .add(GetFilesEvent(user: userEntity));
+                        context
+                            .read<UserEntityBloc>()
+                            .add(UserEntityChangeEvent(userEntity: userEntity));
+                        context
+                            .read<FileUploadingBloc>()
+                            .add(CompletedAllFileUploadingTaskEvent());
+                      } else if (state is UploadingFilesExceededState) {
+                        fileUploadStatus = FileUploadStatus.error;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Exceeded File Size')));
+                      } else if (state is FilesUploadingErrorState) {
+                        fileUploadStatus = FileUploadStatus.error;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Error in Uploading')));
+                      }
+                      return StartButton(
+                          fileUploadStatus: fileUploadStatus,
+                          percentage: uploadedFilePercentage);
+                    }),
+                  ),
+                  Expanded(child: BlocBuilder<FileBloc, FileState>(
+                      builder: (context, state) {
+                    if (state is FilesLoadedState) {
+                      files = state.files;
+                      return _gridListOfFiles();
+                    } else if (state is FilesLoadingErrorState) {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const AuthenticationScreen()),
+                          (route) => false);
+
+                      return Container();
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  }))
+                  // Container(
+                  //   color: Colors.yellow,
+                  //   height: 200,
+                  //   width: 200,
+                  //   child: Image.network(
+                  //     'http://159.65.151.168/media/email@gmail.com/download_kLnDmi7.jpeg',
+                  //     loadingBuilder: (BuildContext context, Widget child,
+                  //         ImageChunkEvent? loadingProgress) {
+                  //       if (loadingProgress == null) {
+                  //         return child;
+                  //       }
+                  //       return Container(
+                  //         color: Colors.red,
+                  //       );
+                  //     },
+                  //     // errorBuilder: (BuildContext context, Object exception,
+                  //     //     StackTrace? stackTrace) {
+                  //     //   // Appropriate logging or analytics, e.g.
+                  //     //   // myAnalytics.recordError(
+                  //     //   //   'An error occurred loading "https://example.does.not.exist/image.jpg"',
+                  //     //   //   exception,
+                  //     //   //   stackTrace,
+                  //     //   // );
+                  //     //   return Container(
+                  //     //     color: Colors.red,
+                  //     //   );
+                  //     // },
+                  //   ),
+                  // )
+                ],
               ),
             ),
           );
@@ -262,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
         itemBuilder: (BuildContext context, int index) {
           return FileGridBoxWidget(
             file: files[index],
-            mainContext: context,
+            userEntity: widget.userEntity,
           );
         },
       );

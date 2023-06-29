@@ -41,19 +41,26 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           print('ooo');
           print('done auth $credential');
           var userEntity = UserEntity(email: credential.user!.email!);
-          userEntity.authToken = await credential.user!.getIdToken();
+          String authToken = await _auth.currentUser!.getIdToken();
           userEntity.uid = credential.user!.uid;
           //TODO Figure how auth token will hange user Entity
-          await storeAuthTokenUsecase.call(userEntity.authToken);
+          userEntity.authToken = authToken;
+          // await storeAuthTokenUsecase.call(authToken);
           // authTokenChangeUseCase.call();
           print('Auth token sorted');
+          //TODO: gfet user details retutning incomplete value for authtoken so use user entity
           UserEntity? user =
               await getuserDetailsFromServerUsecase.call(userEntity);
           print(user?.premium);
+          authToken = await _auth.currentUser!.getIdToken();
+          user?.authToken = authToken;
+          user?.uid = credential.user!.uid;
           if (user != null) {
-            print('Got user details');
+            print('Got user details ${user}');
+
             await storeUserDetailsLocallyUsecase.call(user);
             print('User details stored');
+            emit(LoginInitial());
             Navigator.pushAndRemoveUntil(
                 event.context,
                 MaterialPageRoute(

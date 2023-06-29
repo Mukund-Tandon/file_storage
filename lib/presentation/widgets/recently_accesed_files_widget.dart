@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:goal_lock/presentation/widgets/popup_menu_button_for_files.dart';
 
 import '../../domain/entities/file_from_server_entity.dart';
+import '../../domain/entities/user_entity.dart';
+import '../pages/image_file_view_page.dart';
+import '../pages/video_view_page.dart';
 
 class RecentlyAccessdFilesWidget extends StatefulWidget {
   final FileFromServerEntity file;
-  const RecentlyAccessdFilesWidget({Key? key, required this.file})
+  final UserEntity userEntity;
+  const RecentlyAccessdFilesWidget(
+      {Key? key, required this.file, required this.userEntity})
       : super(key: key);
 
   @override
@@ -36,20 +41,47 @@ class _RecentlyAccessdFilesWidgetState
         children: [
           Expanded(
             child: widget.file.fileType == FileType.notImage
-                ? const Center(
-                    child: Icon(
-                      Icons.video_file_outlined,
-                      color: Colors.white,
-                      size: 30,
+                ? GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => VideoFileViewPage(
+                            fileFromServerEntity: widget.file,
+                            userEntity: widget.userEntity,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Center(
+                      child: Icon(
+                        Icons.file_copy,
+                        color: Colors.white,
+                        size: 30,
+                      ),
                     ),
                   )
-                : Container(
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(10),
-                      image: DecorationImage(
-                          image: NetworkImage(widget.file.url),
-                          fit: BoxFit.fitWidth),
+                : GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ImageFIleViewPage(
+                            fileFromServerEntity: widget.file,
+                            userEntity: widget.userEntity,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          image: DecorationImage(
+                              image: NetworkImage(widget.file.url, headers: {
+                                'Authorization':
+                                    'Bearer ${widget.userEntity.authToken}'
+                              }),
+                              fit: BoxFit.cover)),
                     ),
                   ),
           ),

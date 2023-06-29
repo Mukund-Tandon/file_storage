@@ -15,6 +15,8 @@ abstract class FileRepository {
   Future<void> updateRecentlyUsedFiles(
       FileFromServerEntity recentlyUsedFilesEntity);
   List<FileFromServerEntity> getRecentlyUsedFiles();
+  Future<void> updateFileVisibility(
+      String email, String fileName, String value);
 }
 
 class FileRepositoryImpl implements FileRepository {
@@ -63,5 +65,12 @@ class FileRepositoryImpl implements FileRepository {
       files.add(FileFromServerEntity.fromJson(file));
     }
     return files;
+  }
+
+  @override
+  Future<void> updateFileVisibility(
+      String email, String fileName, String value) {
+    return fileRemoteDataSourceSource.updateFileVisibility(
+        email, fileName, value);
   }
 }

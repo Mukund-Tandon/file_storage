@@ -16,6 +16,7 @@ import 'package:goal_lock/domain/usecases/authentication/get_stored_auth_tokens_
 import 'package:goal_lock/domain/usecases/files/copy_file_url_to_clipboard_usecase.dart';
 import 'package:goal_lock/domain/usecases/files/dowload_file_from_url_usecase.dart';
 import 'package:goal_lock/domain/usecases/files/get_files_usecase.dart';
+import 'package:goal_lock/domain/usecases/files/update_file_visibility_usecase.dart';
 import 'package:goal_lock/domain/usecases/files/update_recently_used_files_usecase.dart';
 import 'package:goal_lock/domain/usecases/files/upload_files.dart';
 import 'package:goal_lock/domain/usecases/premium/cancel_subcribtion_usecase.dart';
@@ -39,6 +40,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/datasources/localDataSource/files/files_local_data_source.dart';
 import 'domain/usecases/authentication/store_auth_tokens_usecase.dart';
+import 'domain/usecases/files/check_and_return_file_size_usecase.dart';
 import 'domain/usecases/files/get_recently_accessed_files_usecase.dart';
 
 final sl = GetIt.instance;
@@ -71,7 +73,10 @@ Future<void> init() async {
       updateUserFieldUsecase: sl(), cancelSubcribtionUsecase: sl()));
   sl.registerFactory<DrawerAnimationBloc>(() => DrawerAnimationBloc());
   sl.registerFactory(() => FileUploadingBloc(
-      uploadFilesUsecase: sl(), getStoredAuthTokenUsecase: sl()));
+      uploadFilesUsecase: sl(),
+      getStoredAuthTokenUsecase: sl(),
+      checkAndReturnFileSizeUsecase: sl(),
+      updateUserFieldUsecase: sl()));
   sl.registerFactory<RecentlyAccessedFilesBloc>(() => RecentlyAccessedFilesBloc(
       updateRecentlyAccessedFilesUsecase: sl(),
       getRecentlyAccessedFilesUseCase: sl()));
@@ -96,6 +101,10 @@ Future<void> init() async {
       () => GetRecentlyAccessedFilesUseCase(fileRepository: sl()));
   sl.registerLazySingleton<UpdateRecentlyAccessedFilesUsecase>(
       () => UpdateRecentlyAccessedFilesUsecase(fileRepository: sl()));
+  sl.registerLazySingleton<CheckAndReturnFileSizeUsecase>(
+      () => CheckAndReturnFileSizeUsecase());
+  sl.registerLazySingleton<UpdateFileVisibiityusecase>(
+      () => UpdateFileVisibiityusecase(fileRepository: sl()));
   //authentication
   sl.registerLazySingleton<AuthTokenChangeUseCase>(
       () => AuthTokenChangeUseCase(authenticationRepository: sl()));
@@ -120,7 +129,9 @@ Future<void> init() async {
           authenticationLocalDataSource: sl(),
           authenticationRemoteDataSource: sl()));
   sl.registerLazySingleton<UserRepository>(() => UserRepositoryImpl(
-      userRemoteDataSource: sl(), userLocalDataSource: sl()));
+      userRemoteDataSource: sl(),
+      userLocalDataSource: sl(),
+      premiumRemoteDataSource: sl()));
   sl.registerLazySingleton<PremiumSubscribtionRepository>(() =>
       PremiumSubcribtionRepositoryImpl(
           premiumRemoteDataSource: sl(), userLocalDataSource: sl()));

@@ -23,6 +23,10 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
       'uid': userEntity.uid,
       'space': userEntity.space
     });
+    if (userEntity.subcribtionDetailsEntity != null) {
+      await storeSubcribtionDetailsLocally(
+          userEntity.subcribtionDetailsEntity!);
+    }
   }
 
   @override

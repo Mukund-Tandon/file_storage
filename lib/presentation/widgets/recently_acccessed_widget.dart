@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:goal_lock/domain/entities/user_entity.dart';
 import 'package:goal_lock/presentation/bloc/file_bloc/recently_accessed_files_bloc.dart';
 import 'package:goal_lock/presentation/widgets/recently_accesed_files_widget.dart';
 
@@ -9,8 +10,10 @@ class RecentlyAccesedWidget extends StatelessWidget {
   RecentlyAccesedWidget({
     super.key,
     required this.width,
+    required this.userEntity,
   });
   final List<FileFromServerEntity> files = [];
+  final UserEntity userEntity;
   final double width;
 
   @override
@@ -36,7 +39,10 @@ class RecentlyAccesedWidget extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 itemCount: state.files.length,
                 itemBuilder: (context, index) {
-                  return RecentlyAccessdFilesWidget(file: state.files[index]);
+                  return RecentlyAccessdFilesWidget(
+                    file: state.files[index],
+                    userEntity: userEntity,
+                  );
                 },
               );
             }

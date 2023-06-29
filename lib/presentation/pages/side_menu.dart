@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:goal_lock/domain/entities/user_entity.dart';
@@ -6,6 +7,7 @@ import 'package:goal_lock/presentation/widgets/premium_and_space.dart';
 import '../bloc/file_bloc/recently_accessed_files_bloc.dart';
 import '../bloc/user_entity_bloc/user_entity_bloc.dart';
 import '../widgets/recently_acccessed_widget.dart';
+import 'authentication.dart';
 import 'get_premium.dart';
 
 class SideMenu extends StatefulWidget {
@@ -49,12 +51,15 @@ class _SideMenuState extends State<SideMenu> {
                       'Recent',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 15,
+                        fontSize: 18,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
-                  RecentlyAccesedWidget(width: width),
+                  RecentlyAccesedWidget(
+                    width: width,
+                    userEntity: userEntity,
+                  ),
                 ],
               ),
             ),
@@ -68,21 +73,7 @@ class _SideMenuState extends State<SideMenu> {
               ),
               child: Container(
                 // color: Colors.yellow,
-                child: BlocBuilder<UserEntityBloc, UserEntityState>(
-                  builder: (context, state) {
-                    if (state is UserEntityLoadingState) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    if (state is UserEntityChangedState) {
-                      userEntity = state.userEntity;
-                      print('change is here');
-                      print(userEntity.premium);
-                    }
-                    return PremiumAndSpace(userEntity: userEntity);
-                  },
-                ),
+                child: PremiumAndSpace(userEntity: userEntity),
               ),
             ),
           ),
@@ -96,6 +87,22 @@ class _SideMenuState extends State<SideMenu> {
                             userEntity: userEntity,
                           )));
             },
+          ),
+          Spacer(),
+          Container(
+            margin: const EdgeInsets.only(bottom: 15),
+            child: SideMenuButton(
+              buttonTitle: 'LogOut',
+              onTap: () {
+                final _auth = FirebaseAuth.instance;
+                _auth.signOut();
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AuthenticationScreen()),
+                    (route) => false);
+              },
+            ),
           ),
         ],
       ),

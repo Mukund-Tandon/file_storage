@@ -11,7 +11,7 @@ class FileInitial extends FileState {
 
 class FilesLoadingState extends FileState {
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 }
 
 class FilesLoadedState extends FileState {
@@ -22,7 +22,6 @@ class FilesLoadedState extends FileState {
 }
 
 class FilesLoadingErrorState extends FileState {
-  FilesLoadingErrorState();
   @override
   List<Object?> get props => [];
 }

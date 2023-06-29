@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:goal_lock/domain/entities/user_entity.dart';
 import 'package:goal_lock/domain/usecases/files/dowload_file_from_url_usecase.dart';
 import 'package:goal_lock/presentation/widgets/share_file_dialog.dart';
 
@@ -12,29 +13,29 @@ class PopupMenuButtonForFiles extends StatelessWidget {
   const PopupMenuButtonForFiles({
     super.key,
     required this.file,
-    required this.mainContext,
+    required this.userEntity,
   });
 
   final FileFromServerEntity file;
-  final BuildContext mainContext;
+  final UserEntity userEntity;
 
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
       itemBuilder: (context) {
         return [
-          PopupMenuItem(
-            onTap: () {},
-            child: PopUpmenuItemButton(
-              title: 'Delete',
-            ),
-          ),
-          PopupMenuItem(
-            onTap: () {},
-            child: PopUpmenuItemButton(
-              title: 'Rename',
-            ),
-          ),
+          // PopupMenuItem(
+          //   onTap: () {},
+          //   child: PopUpmenuItemButton(
+          //     title: 'Delete',
+          //   ),
+          // ),
+          // PopupMenuItem(
+          //   onTap: () {},
+          //   child: PopUpmenuItemButton(
+          //     title: 'Rename',
+          //   ),
+          // ),
           PopupMenuItem(
             value: 'Share',
             child: PopUpmenuItemButton(
@@ -55,9 +56,12 @@ class PopupMenuButtonForFiles extends StatelessWidget {
           context.read<RecentlyAccessedFilesBloc>().add(
               UpdateRecentlyAccessedFilesEvent(recentlyAccessedFile: file));
           showDialog(
-              context: mainContext,
+              context: context,
               builder: (context) {
-                return ShareFileDialog(file: file);
+                return ShareFileDialog(
+                  file: file,
+                  userEntity: userEntity,
+                );
               });
         } else if (value == 'Download') {
           print('Download');

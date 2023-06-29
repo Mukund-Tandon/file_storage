@@ -108,8 +108,8 @@ class _MyAppState extends State<MyApp> {
               var user = state.userEntity;
               return Mainpage(userEntity: user);
             } else if (state is StoringAuthenticationDetailsState) {
-              return Scaffold(
-                backgroundColor: Colors.yellow,
+              return const Scaffold(
+                backgroundColor: Color(0xff17181F),
               );
             } else {
               return const AuthenticationScreen();

@@ -39,7 +39,8 @@ class AuthCheckCubit extends Cubit<AuthCheckState> {
       userentity.uid = user.uid;
 
       UserEntity? curruser = getLocalyStoredUserDetailsUsecase.call(userentity);
-
+      curruser?.authToken = authToken;
+      curruser?.uid = user.uid;
       if (curruser == null) {
         print('unauth');
         emit(AuthenticationCheckErrorState());

@@ -24,11 +24,12 @@ class FileBloc extends Bloc<FileEvent, FileState> {
       required this.getStoredAuthTokenUsecase})
       : super(FileInitial()) {
     on<GetFilesEvent>((event, emit) async {
+      print('GetFilesEvent');
       emit(FilesLoadingState());
       List<FileFromServerEntity> list = [];
-      String? authToken = await getStoredAuthTokenUsecase.call();
-      if (authToken != null) {
-        event.user.authToken = authToken;
+      // String? authToken = await getStoredAuthTokenUsecase.call();
+      if (event.user.authToken != null) {
+        // event.user.authToken = authToken;
         list = await getFilesUsecase.call(event.user);
         print('List == $list');
         emit(FilesLoadedState(files: list));

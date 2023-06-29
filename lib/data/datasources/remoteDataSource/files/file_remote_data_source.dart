@@ -12,6 +12,8 @@ abstract class FileRemoteDataSourceSource {
   Stream<FileUploadingFetailStreamEntity>? uploadFile(
       UploadFileEntity uploadFileEntity);
   Future<List<FileFromServerEntity>> getFilesFromServer(UserEntity userEntity);
+  Future<void> updateFileVisibility(
+      String email, String fileName, String value);
 }
 
 class FileRemoteDataSourceImpl implements FileRemoteDataSourceSource {
@@ -39,11 +41,10 @@ class FileRemoteDataSourceImpl implements FileRemoteDataSourceSource {
     print(userEntity.authToken);
 
     try {
-      print('trying to det files ');
       var response = await dio.get(url,
           options: Options(
               headers: {'Authorization': 'Bearer ${userEntity.authToken}'}));
-      print('got the files');
+      print('file_respomse');
       print(response.data);
       List<dynamic> listOfLocations = response.data['good'];
       listOfLocations.forEach((element) {
@@ -80,5 +81,13 @@ class FileRemoteDataSourceImpl implements FileRemoteDataSourceSource {
     _controller.add(FileUploadingFetailStreamEntity(
         fileUploadStatus: FileUploadStatus.completed, percentage: '100'));
     print('done uploaded to server');
+  }
+
+  @override
+  Future<void> updateFileVisibility(
+      String email, String fileName, String value) async {
+    String url =
+        'http://$ip:8000/update_file_visibility/$email/$fileName/$value';
+    dio.patch(url);
   }
 }

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:goal_lock/presentation/pages/video_view_page.dart';
 import 'package:goal_lock/presentation/widgets/popup_menu_button_for_files.dart';
 
 import '../../domain/entities/file_from_server_entity.dart';
+import '../../domain/entities/user_entity.dart';
+import '../pages/image_file_view_page.dart';
 
 class FileGridBoxWidget extends StatefulWidget {
   final FileFromServerEntity file;
-  final BuildContext mainContext;
-  FileGridBoxWidget({Key? key, required this.file, required this.mainContext})
+  final UserEntity userEntity;
+  FileGridBoxWidget({Key? key, required this.file, required this.userEntity})
       : super(key: key);
 
   @override
@@ -33,19 +36,48 @@ class _FileGridBoxWidgetState extends State<FileGridBoxWidget> {
         children: [
           Expanded(
             child: widget.file.fileType == FileType.notImage
-                ? Center(
-                    child: Icon(
-                      Icons.file_copy,
-                      color: Colors.white,
-                      size: 50,
+                ? GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => VideoFileViewPage(
+                            fileFromServerEntity: widget.file,
+                            userEntity: widget.userEntity,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Center(
+                      child: Icon(
+                        Icons.file_copy,
+                        color: Colors.white,
+                        size: 50,
+                      ),
                     ),
                   )
-                : Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        image: DecorationImage(
-                            image: NetworkImage(widget.file.url),
-                            fit: BoxFit.cover)),
+                : GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ImageFIleViewPage(
+                            fileFromServerEntity: widget.file,
+                            userEntity: widget.userEntity,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          image: DecorationImage(
+                              image: NetworkImage(widget.file.url, headers: {
+                                'Authorization':
+                                    'Bearer ${widget.userEntity.authToken}'
+                              }),
+                              fit: BoxFit.cover)),
+                    ),
                   ),
           ),
           Container(
@@ -69,7 +101,9 @@ class _FileGridBoxWidgetState extends State<FileGridBoxWidget> {
                   flex: 1,
                   child: Container(
                     child: PopupMenuButtonForFiles(
-                        file: widget.file, mainContext: widget.mainContext),
+                      file: widget.file,
+                      userEntity: widget.userEntity,
+                    ),
                   ),
                 ),
                 // GestureDetector(

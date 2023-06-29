@@ -32,3 +32,13 @@ class UploadingCompletedEvent extends FileUploadingEvent {
   @override
   List<Object?> get props => [];
 }
+
+class CompletedAllFileUploadingTaskEvent extends FileUploadingEvent {
+  @override
+  List<Object?> get props => [];
+}
+
+class UploadingFileSizeExceededEvent extends FileUploadingEvent {
+  @override
+  List<Object?> get props => [];
+}

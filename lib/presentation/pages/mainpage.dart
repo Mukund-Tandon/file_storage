@@ -61,11 +61,11 @@ class _MainpageState extends State<Mainpage> {
       ),
       child: Scaffold(
           backgroundColor: const Color(0xff17181F),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              prefs.remove('recentlyAccessed');
-            },
-          ),
+          // floatingActionButton: FloatingActionButton(
+          //   onPressed: () {
+          //     prefs.remove('recentlyAccessed');
+          //   },
+          // ),
           body: BlocBuilder<UserEntityBloc, UserEntityState>(
             builder: (context, state) {
               if (state is UserEntityLoadingState) {
